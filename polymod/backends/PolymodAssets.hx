@@ -225,6 +225,7 @@ class PolymodAssets
 
 @:enum abstract PolymodAssetType(String) from String to String
 {
+	var BINARY = 'BINARY';
 	var BYTES = 'BYTES';
 	var TEXT = 'TEXT';
 	var IMAGE = 'IMAGE';
@@ -235,6 +236,7 @@ class PolymodAssets
 	var AUDIO_SOUND = 'AUDIO_SOUND';
 	var MANIFEST = 'MANIFEST';
 	var TEMPLATE = 'TEMPLATE';
+	var SPARROW = 'SPARROW';
 	var UNKNOWN = 'UNKNOWN';
 
 	public static function fromString(str:String):PolymodAssetType
@@ -242,7 +244,7 @@ class PolymodAssets
 		str = str.toUpperCase();
 		switch (str)
 		{
-			case BYTES, TEXT, IMAGE, VIDEO, FONT, AUDIO_GENERIC, AUDIO_MUSIC, AUDIO_SOUND, MANIFEST, TEMPLATE, UNKNOWN:
+			case BINARY, BYTES, TEXT, IMAGE, VIDEO, FONT, AUDIO_GENERIC, AUDIO_MUSIC, AUDIO_SOUND, MANIFEST, TEMPLATE, SPARROW, UNKNOWN:
 				return str;
 			default:
 				return UNKNOWN;

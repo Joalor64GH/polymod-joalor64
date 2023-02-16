@@ -416,6 +416,8 @@ class PolymodAssetLibrary
 		_extensionSet('hx', TEXT);
 		_extensionSet('hxc', TEXT);
 		_extensionSet('hxs', TEXT);
+		_extensionSet('hscript', TEXT);
+		_extensionSet('lua', TEXT);
 		_extensionSet('json', TEXT);
 		_extensionSet('md', TEXT);
 		_extensionSet('mpf', TEXT);
@@ -424,13 +426,21 @@ class PolymodAssetLibrary
 		_extensionSet('tsx', TEXT);
 		_extensionSet('txt', TEXT);
 		_extensionSet('vdf', TEXT);
-		_extensionSet('xml', TEXT);
+
+		_extensionSet('xml', SPARROW);
 
 		_extensionSet('avi', VIDEO);
 		_extensionSet('mkv', VIDEO);
 		_extensionSet('mov', VIDEO);
 		_extensionSet('mp4', VIDEO);
+		_extensionSet('swf', VIDEO);
 		_extensionSet('webm', VIDEO);
+
+		_extensionSet('fla', BINARY);
+		_extensionSet('flp', BINARY);
+		_extensionSet('zip', BINARY);
+		_extensionSet('dll', BINARY);
+		_extensionSet('ndll', BINARY);
 	}
 
 	private function _extensionSet(str:String, type:PolymodAssetType)
