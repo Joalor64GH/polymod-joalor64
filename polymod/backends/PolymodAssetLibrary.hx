@@ -401,33 +401,76 @@ class PolymodAssetLibrary
 		_extensionSet('ogg', AUDIO_GENERIC);
 		_extensionSet('wav', AUDIO_GENERIC);
 
+		_extensionSet('mp2', AUDIO_MUSIC);
+		_extensionSet('m4a', AUDIO_MUSIC);
+
+		_extensionSet('wave', AUDIO_SOUND);
+
 		_extensionSet('otf', FONT);
 		_extensionSet('ttf', FONT);
+		_extensionSet('woff2', FONT);
+		_extensionSet('woff', FONT);
 
 		_extensionSet('bmp', IMAGE);
 		_extensionSet('gif', IMAGE);
+		_extensionSet('jfif', IMAGE);
 		_extensionSet('jpg', IMAGE);
+		_extensionSet('jpeg', IMAGE);
 		_extensionSet('png', IMAGE);
 		_extensionSet('tga', IMAGE);
 		_extensionSet('tif', IMAGE);
 		_extensionSet('tiff', IMAGE);
+		_extensionSet('webp', IMAGE);
 
+		_extensionSet('c', TEXT);
+		_extensionSet('cpp', TEXT);
+		_extensionSet('cs', TEXT);
+		_extensionSet('css', TEXT);
 		_extensionSet('csv', TEXT);
+		_extensionSet('d', TEXT);
+		_extensionSet('gpe', TEXT);
+		_extensionSet('h', TEXT);
+		_extensionSet('hhx', TEXT);
+		_extensionSet('hscript', TEXT);
+		_extensionSet('html', TEXT);
+		_extensionSet('hu', TEXT);
 		_extensionSet('hx', TEXT);
 		_extensionSet('hxc', TEXT);
+		_extensionSet('hxml', TEXT);
+		_extensionSet('hxproj', TEXT);
 		_extensionSet('hxs', TEXT);
-		_extensionSet('hscript', TEXT);
-		_extensionSet('lua', TEXT);
+		_extensionSet('hxx', TEXT);
+		_extensionSet('i', TEXT);
+		_extensionSet('ini', TEXT);
+		_extensionSet('java', TEXT);
+		_extensionSet('js', TEXT);
 		_extensionSet('json', TEXT);
+		_extensionSet('jsonc', TEXT);
+		_extensionSet('lime', TEXT);
+		_extensionSet('lua', TEXT);
+		_extensionSet('m', TEXT);
 		_extensionSet('md', TEXT);
+		_extensionSet('mm', TEXT);
 		_extensionSet('mpf', TEXT);
+		_extensionSet('nmml', TEXT);
+		_extensionSet('pbxproj', TEXT);
+		_extensionSet('pl', TEXT);
+		_extensionSet('plist', TEXT);
+		_extensionSet('properties', TEXT);
+		_extensionSet('py', TEXT);
+		_extensionSet('r', TEXT);
+		_extensionSet('ru', TEXT);
+		_extensionSet('s', TEXT);
+		_extensionSet('sh', TEXT);
+		_extensionSet('svg', TEXT);
+		_extensionSet('t', TEXT);
+		_extensionSet('text', TEXT);
 		_extensionSet('tmx', TEXT);
 		_extensionSet('tsv', TEXT);
 		_extensionSet('tsx', TEXT);
 		_extensionSet('txt', TEXT);
 		_extensionSet('vdf', TEXT);
-
-		_extensionSet('xml', SPARROW);
+		_extensionSet('xml', TEXT);
 
 		_extensionSet('avi', VIDEO);
 		_extensionSet('mkv', VIDEO);
@@ -436,11 +479,25 @@ class PolymodAssetLibrary
 		_extensionSet('swf', VIDEO);
 		_extensionSet('webm', VIDEO);
 
+		_extensionSet('7z', BINARY);
+		_extensionSet('atf', BINARY);
+		_extensionSet('awd', BINARY);
+		_extensionSet('dll', BINARY);
+		_extensionSet('exe', BINARY);
 		_extensionSet('fla', BINARY);
 		_extensionSet('flp', BINARY);
-		_extensionSet('zip', BINARY);
-		_extensionSet('dll', BINARY);
+		_extensionSet('gz', BINARY);
 		_extensionSet('ndll', BINARY);
+		_extensionSet('pch', BINARY);
+		_extensionSet('psd', BINARY);
+		_extensionSet('rar', BINARY);
+		_extensionSet('so', BINARY);
+		_extensionSet('tar', BINARY);
+		_extensionSet('zip', BINARY);
+
+		_extensionSet('bundle', MANIFEST);
+
+		_extensionSet('DS_Store', UNKNOWN);
 	}
 
 	private function _extensionSet(str:String, type:PolymodAssetType)

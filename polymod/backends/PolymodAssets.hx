@@ -231,12 +231,12 @@ class PolymodAssets
 	var IMAGE = 'IMAGE';
 	var VIDEO = 'VIDEO';
 	var FONT = 'FONT';
+	var MANIFEST = 'MANIFEST';
 	var AUDIO_GENERIC = 'AUDIO_GENERIC';
 	var AUDIO_MUSIC = 'AUDIO_MUSIC';
 	var AUDIO_SOUND = 'AUDIO_SOUND';
 	var MANIFEST = 'MANIFEST';
 	var TEMPLATE = 'TEMPLATE';
-	var SPARROW = 'SPARROW';
 	var UNKNOWN = 'UNKNOWN';
 
 	public static function fromString(str:String):PolymodAssetType
@@ -244,7 +244,7 @@ class PolymodAssets
 		str = str.toUpperCase();
 		switch (str)
 		{
-			case BINARY, BYTES, TEXT, IMAGE, VIDEO, FONT, AUDIO_GENERIC, AUDIO_MUSIC, AUDIO_SOUND, MANIFEST, TEMPLATE, SPARROW, UNKNOWN:
+			case BINARY, BYTES, TEXT, IMAGE, VIDEO, FONT, MANIFEST, AUDIO_GENERIC, AUDIO_MUSIC, AUDIO_SOUND, MANIFEST, TEMPLATE, UNKNOWN:
 				return str;
 			default:
 				return UNKNOWN;
