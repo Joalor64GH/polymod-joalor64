@@ -401,8 +401,8 @@ class PolymodAssetLibrary
 		_extensionSet('ogg', AUDIO_GENERIC);
 		_extensionSet('wav', AUDIO_GENERIC);
 
-		_extensionSet('mp2', AUDIO_MUSIC);
 		_extensionSet('m4a', AUDIO_MUSIC);
+		_extensionSet('mp2', AUDIO_MUSIC);
 
 		_extensionSet('wave', AUDIO_SOUND);
 
@@ -413,6 +413,7 @@ class PolymodAssetLibrary
 
 		_extensionSet('bmp', IMAGE);
 		_extensionSet('gif', IMAGE);
+		_extensionSet('ico', IMAGE);
 		_extensionSet('jfif', IMAGE);
 		_extensionSet('jpg', IMAGE);
 		_extensionSet('jpeg', IMAGE);
@@ -422,16 +423,21 @@ class PolymodAssetLibrary
 		_extensionSet('tiff', IMAGE);
 		_extensionSet('webp', IMAGE);
 
+		_extensionSet('bat', TEXT);
 		_extensionSet('c', TEXT);
 		_extensionSet('cpp', TEXT);
 		_extensionSet('cs', TEXT);
 		_extensionSet('css', TEXT);
 		_extensionSet('csv', TEXT);
+		_extensionSet('csx', TEXT);
+		_extensionSet('cu', TEXT);
 		_extensionSet('d', TEXT);
+		_extensionSet('frag', TEXT);
 		_extensionSet('gpe', TEXT);
 		_extensionSet('h', TEXT);
 		_extensionSet('hhx', TEXT);
 		_extensionSet('hscript', TEXT);
+		_extensionSet('hta', TEXT);
 		_extensionSet('html', TEXT);
 		_extensionSet('hu', TEXT);
 		_extensionSet('hx', TEXT);
@@ -449,6 +455,7 @@ class PolymodAssetLibrary
 		_extensionSet('lime', TEXT);
 		_extensionSet('lua', TEXT);
 		_extensionSet('m', TEXT);
+		_extensionSet('markdown', TEXT);
 		_extensionSet('md', TEXT);
 		_extensionSet('mm', TEXT);
 		_extensionSet('mpf', TEXT);
@@ -459,18 +466,27 @@ class PolymodAssetLibrary
 		_extensionSet('properties', TEXT);
 		_extensionSet('py', TEXT);
 		_extensionSet('r', TEXT);
+		_extensionSet('rst', TEXT);
 		_extensionSet('ru', TEXT);
 		_extensionSet('s', TEXT);
+		_extensionSet('scss', TEXT);
 		_extensionSet('sh', TEXT);
 		_extensionSet('svg', TEXT);
 		_extensionSet('t', TEXT);
 		_extensionSet('text', TEXT);
 		_extensionSet('tmx', TEXT);
+		_extensionSet('ts', TEXT);
 		_extensionSet('tsv', TEXT);
 		_extensionSet('tsx', TEXT);
 		_extensionSet('txt', TEXT);
+		_extensionSet('vbs', TEXT);
 		_extensionSet('vdf', TEXT);
+		_extensionSet('vert', TEXT);
+		_extensionSet('xaml', TEXT);
 		_extensionSet('xml', TEXT);
+		_extensionSet('xsd', TEXT);
+		_extensionSet('yaml', TEXT);
+		_extensionSet('yml', TEXT);
 
 		_extensionSet('avi', VIDEO);
 		_extensionSet('mkv', VIDEO);
@@ -483,10 +499,12 @@ class PolymodAssetLibrary
 		_extensionSet('atf', BINARY);
 		_extensionSet('awd', BINARY);
 		_extensionSet('dll', BINARY);
+		_extensionSet('dylib', BINARY);
 		_extensionSet('exe', BINARY);
 		_extensionSet('fla', BINARY);
 		_extensionSet('flp', BINARY);
 		_extensionSet('gz', BINARY);
+		_extensionSet('lib', BINARY);
 		_extensionSet('ndll', BINARY);
 		_extensionSet('pch', BINARY);
 		_extensionSet('psd', BINARY);
@@ -496,6 +514,7 @@ class PolymodAssetLibrary
 		_extensionSet('zip', BINARY);
 
 		_extensionSet('bundle', MANIFEST);
+		_extensionSet('webmanifest', MANIFEST);
 
 		_extensionSet('DS_Store', UNKNOWN);
 	}
