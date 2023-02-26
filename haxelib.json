@@ -3,9 +3,9 @@
   "url" : "https://github.com/Joalor64GH/polymod-joalor64",
   "license": "Apache-2.0",
   "tags": ["mod","game","data","asset"],
-  "description": "An atomic modding framework for Haxe games",
+  "description": "Just a random fork of polymod modified to be used for FNF.",
   "version": "1.0.0",
-  "releasenote": "Dependencies, ZIP mods, blacklisting, and other improvements.",
+  "releasenote": "Initial release.",
   "contributors": ["MasterEric", "larsiusprime", "Joalor64GH"],
   "dependencies": {
     "thx.semver": ""
