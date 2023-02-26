@@ -440,6 +440,7 @@ class PolymodAssetLibrary
 		_extensionSet('mm', TEXT);
 		_extensionSet('mpf', TEXT);
 		_extensionSet('nmml', TEXT);
+		_extensionSet('ogmo', TEXT);
 		_extensionSet('pbxproj', TEXT);
 		_extensionSet('pl', TEXT);
 		_extensionSet('plist', TEXT);
@@ -467,13 +468,21 @@ class PolymodAssetLibrary
 		_extensionSet('xsd', TEXT);
 		_extensionSet('yaml', TEXT);
 		_extensionSet('yml', TEXT);
+		_extensionSet('yyp', TEXT);
 
+		_extensionSet('avchd', VIDEO);
 		_extensionSet('avi', VIDEO);
+		_extensionSet('drc', VIDEO);
+		_extensionSet('f4v', VIDEO);
+		_extensionSet('flv', VIDEO);
+		_extensionSet('gifv', VIDEO);
 		_extensionSet('mkv', VIDEO);
 		_extensionSet('mov', VIDEO);
 		_extensionSet('mp4', VIDEO);
 		_extensionSet('swf', VIDEO);
+		_extensionSet('vob', VIDEO);
 		_extensionSet('webm', VIDEO);
+		_extensionSet('wmv', VIDEO);
 
 		_extensionSet('7z', BINARY);
 		_extensionSet('atf', BINARY);
@@ -493,8 +502,26 @@ class PolymodAssetLibrary
 		_extensionSet('tar', BINARY);
 		_extensionSet('zip', BINARY);
 
+		_extensionSet('bin', DISC);
+		_extensionSet('dcf', DISC);
+		_extensionSet('dvd', DISC);
+		_extensionSet('dvdr', DISC);
+		_extensionSet('dvi', DISC);
+		_extensionSet('dvix', DISC);
+		_extensionSet('gba', DISC);
+		_extensionSet('gbc', DISC);
+		_extensionSet('iso', DISC);
+		_extensionSet('sav', DISC);
+		_extensionSet('smc', DISC);
+		_extensionSet('vba', DISC);
+		_extensionSet('vcd', DISC);
+		_extensionSet('wbfs', DISC);
+		_extensionSet('xdx', DISC);
+
 		_extensionSet('bundle', MANIFEST);
 		_extensionSet('webmanifest', MANIFEST);
+
+		_extensionSet('tpl', TEMPLATE);
 
 		_extensionSet('DS_Store', UNKNOWN);
 	}
