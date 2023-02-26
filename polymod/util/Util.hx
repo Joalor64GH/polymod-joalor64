@@ -1,8 +1,7 @@
 package polymod.util;
 
-import haxe.Utf8;
-import haxe.io.Bytes;
 import haxe.io.Path;
+import haxe.Utf8;
 import polymod.Polymod.PolymodError;
 import polymod.Polymod.PolymodErrorType;
 import polymod.Polymod;
@@ -31,10 +30,6 @@ class Util
 		{
 			parentDirs.push(parentDir);
 			parentDir = Path.directory(parentDir);
-
-			// Prevent infinite loop
-			if (parentDirs.contains(parentDir))
-				parentDir = null;
 		}
 		return parentDirs;
 	}
@@ -57,23 +52,6 @@ class Util
 		}
 
 		return text;
-	}
-
-	/**
-	 * Filters a unicode string to only contain characters that are valid in a filename.
-	 */
-	public static function filterASCII(str:String):String
-	{
-		var filtered:String = "";
-		for (i in 0...str.length)
-		{
-			var c = str.charCodeAt(i);
-			if (c >= 32 && c <= 126)
-			{
-				filtered += str.charAt(i);
-			}
-		}
-		return filtered;
 	}
 
 	/**
@@ -317,7 +295,7 @@ class Util
 
 	public static function pathSpecial(id:String, special:String = '', theDir:String = ''):String
 	{
-		#if (sys || nodefs || html5)
+		#if (sys || nodefs)
 		id = stripAssetsPrefix(id);
 		var thePath = uCombine([theDir, sl(), special, sl(), id]);
 		return thePath;
@@ -403,42 +381,7 @@ class Util
 		return c;
 	}
 
-	/**
-	 * Runs the 'Inflate' decompression algorithm on the raw compressed bytes
-	 * and returns the uncompressed data.
-	 *
-	 * @param bytes A raw block of compressed bytes
-	 * @return A raw block of uncompressed bytes
-	 */
-	public static function unzipBytes(compressedBytes:Bytes)
-	{
-		var returnBuf = new haxe.io.BytesBuffer();
-
-		// Initialize the Inflate algorithm.
-		var bytesInput = new haxe.io.BytesInput(compressedBytes);
-		var inflater = new haxe.zip.InflateImpl(bytesInput, false, false);
-
-		// Read and inflate the bytes in chunks of 65,535 bytes.
-		var unzipBuf = Bytes.alloc(65535);
-		var bytesRead = inflater.readBytes(unzipBuf, 0, unzipBuf.length);
-		while (bytesRead == unzipBuf.length)
-		{
-			returnBuf.addBytes(unzipBuf, 0, bytesRead);
-			bytesRead = inflater.readBytes(unzipBuf, 0, unzipBuf.length);
-		}
-		// Add the last chunk of bytes to the return buffer.
-		returnBuf.addBytes(unzipBuf, 0, bytesRead);
-
-		// Return the uncompressed bytes.
-		return returnBuf.getBytes();
-	}
-
-	/**
-	 * String concatenation	with UTF-8 compatibility.
-	 * @param a 
-	 * @param b 
-	 * @return String
-	 */
+	/*****UTF shims*****/
 	public static function uCat(a:String, b:String):String
 	{
 		var sb = new StringBuf();

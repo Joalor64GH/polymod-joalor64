@@ -9,9 +9,6 @@ import polymod.Polymod.ModMetadata;
 import polymod.PolymodConfig;
 import polymod.fs.PolymodFileSystem.IFileSystem;
 import polymod.util.Util;
-import polymod.util.VersionUtil;
-import thx.semver.Version;
-import thx.semver.VersionRule;
 
 /**
  * An implementation of IFileSystem which accesses files from the local directory,
@@ -205,34 +202,20 @@ class NodeFileSystem implements IFileSystem
 	}
 
 	// -----------------------------------------------------------------------------------------------
-	public function scanMods(?apiVersionRule:VersionRule):Array<ModMetadata>
+	public function scanMods()
 	{
-		if (apiVersionRule == null)
-			apiVersionRule = VersionUtil.DEFAULT_VERSION_RULE;
-
 		var dirs = readDirectory(modRoot);
-		var result:Array<ModMetadata> = [];
-		for (dir in dirs)
+		var l = dirs.length;
+		for (i in 0...l)
 		{
-			var testDir = Util.pathJoin(modRoot, dir);
-
-			if (!exists(testDir))
-				continue;
-
-			if (!isDirectory(testDir))
-				continue;
-
-			var meta:ModMetadata = this.getMetadata(dir);
-
-			if (meta == null)
-				continue;
-
-			if (!VersionUtil.match(meta.apiVersion, apiVersionRule))
-				continue;
-
-			result.push(meta);
+			var j = l - i - 1;
+			var dir = dirs[j];
+			var testDir = '$modRoot/$dir';
+			if (!isDirectory(testDir) || !exists(testDir))
+			{
+				dirs.splice(j, 1);
+			}
 		}
-
-		return result;
+		return dirs;
 	}
 }

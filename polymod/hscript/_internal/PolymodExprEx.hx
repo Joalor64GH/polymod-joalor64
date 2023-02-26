@@ -1,64 +1,54 @@
 package polymod.hscript._internal;
 
 #if hscriptPos
-class ErrorEx
-{
+class ErrorEx {
 	/**
 	 * The line number the error occurred on.
 	 */
-	public var line:Int;
-
-	public var e:ErrorDefEx;
-	public var pmin:Int;
-	public var pmax:Int;
-	public var origin:String;
-
-	public function new(e, pmin, pmax, origin, line)
-	{
+	public var line: Int;
+	public var e: ErrorDefEx;
+	public var pmin: Int;
+	public var pmax: Int;
+	public var origin: String;
+	public function new(e, pmin, pmax, origin, line) {
 		this.e = e;
 		this.pmin = pmin;
 		this.pmax = pmax;
 		this.origin = origin;
 		this.line = line;
 	}
-
-	public function toString():String
-	{
+	public function toString(): String {
 		return PolymodPrinterEx.errorExToString(this);
 	}
 }
 
-enum ErrorDefEx
-{
+enum ErrorDefEx {
 #else
-enum ErrorEx
-{
+enum ErrorEx {
 #end
+	// Original error types.
+	EInvalidChar( c : Int );
+	EUnexpected( s : String );
+	EUnterminatedString;
+	EUnterminatedComment;
+	EInvalidPreprocessor( msg : String );
+	EUnknownVariable( v : String );
+	EInvalidIterator( v : String );
+	EInvalidOp( op : String );
+	EInvalidAccess( f : String );
+	
+	// Polymod-specific error types.
+	EInvalidModule( m : String );
+	EInvalidScriptedFnAccess( f : String );
+	EInvalidScriptedVarGet( v : String );
+	EInvalidScriptedVarSet( v : String );
 
-// Original error types.
-EInvalidChar(c:Int);
-EUnexpected(s:String);
-EUnterminatedString;
-EUnterminatedComment;
-EInvalidPreprocessor(msg:String);
-EUnknownVariable(v:String);
-EInvalidIterator(v:String);
-EInvalidOp(op:String);
-EInvalidAccess(f:String);
-// Polymod-specific error types.
-EInvalidModule(m:String);
-EBlacklistedModule(m:String);
-EInvalidScriptedFnAccess(f:String);
-EInvalidScriptedVarGet(v:String);
-EInvalidScriptedVarSet(v:String);
-EClassSuperNotCalled;
-EClassUnresolvedSuperclass(c:String, r:String); // superclass and reason
-// Fallback error type.
-ECustom(msg:String);
-} class ErrorExUtil
-{
-	public static function toErrorEx(err:hscript.Expr.Error):ErrorEx
-	{
+	// Fallback error type.
+	ECustom( msg : String );
+}
+
+class ErrorExUtil {
+	public static function toErrorEx(err:hscript.Expr.Error):ErrorEx {
 		#if hscriptPos
 		switch (err.e)
 		#else
@@ -126,6 +116,6 @@ ECustom(msg:String);
 				return ECustom(msg);
 				#end
 		}
-		throw "Unimplemented error type " + err;
+		throw "Unimplemented error type";
 	}
 }

@@ -12,10 +12,10 @@ using StringTools;
 import unifill.Unifill;
 #end
 #if (lime && !nme && !macro)
-import lime.app.Future;
+import lime.text.Font;
 import lime.graphics.Image;
 import lime.net.HTTPRequest;
-import lime.text.Font;
+import lime.app.Future;
 import lime.utils.Assets;
 import lime.utils.Bytes;
 #if (lime >= '4.0.0')
@@ -34,10 +34,6 @@ class LimeBackend extends StubBackend
 	public function new()
 	{
 		super();
-		Polymod.error(FAILED_CREATE_BACKEND, "LimeBackend requires the lime library, did you forget to install it?");
-	}
-
-	public function preloadImagesToCache():Void {
 		Polymod.error(FAILED_CREATE_BACKEND, "LimeBackend requires the lime library, did you forget to install it?");
 	}
 }
@@ -149,12 +145,7 @@ class LimeBackend implements IBackend
 				}
 			}
 			var fallbackLibrary = defaultLibraries.get(key);
-			// Prevent recursion when reinitializing Polymod.
-			while (Std.isOfType(fallbackLibrary, LimeModLibrary))
-			{
-				fallbackLibrary = cast(fallbackLibrary, LimeModLibrary).getFallbackLibrary();
-			}
-			var modLibrary = buildModLibrary(fallbackLibrary, pathPrefix, key);
+			var modLibrary = getModLibrary(fallbackLibrary, pathPrefix);
 			modLibraries.set(key, modLibrary);
 		}
 
@@ -166,9 +157,9 @@ class LimeBackend implements IBackend
 		return true;
 	}
 
-	function buildModLibrary(fallbackLibrary:AssetLibrary, pathPrefix:String, libraryName:String):LimeModLibrary
+	private function getModLibrary(fallbackLibrary:AssetLibrary, pathPrefix:String):LimeModLibrary
 	{
-		return new LimeModLibrary(this, fallbackLibrary, pathPrefix, libraryName);
+		return new LimeModLibrary(this, fallbackLibrary, pathPrefix);
 	}
 
 	/**
@@ -209,20 +200,6 @@ class LimeBackend implements IBackend
 		return text;
 	}
 
-	public function loadBytes(id:String):lime.app.Future<Bytes>
-	{
-		var symbol = new IdAndLibrary(id, modLibraries);
-		var bytesFuture = symbol.library.loadBytes(symbol.modId);
-		return bytesFuture;
-	}
-
-	public function loadText(id:String):lime.app.Future<String>
-	{
-		var symbol = new IdAndLibrary(id, modLibraries);
-		var textFuture = symbol.library.loadText(symbol.modId);
-		return textFuture;
-	}
-
 	public function getPath(id:String):String
 	{
 		var symbol = new IdAndLibrary(id, modLibraries);
@@ -238,18 +215,7 @@ class LimeBackend implements IBackend
 		var arr = [];
 		for (modLibrary in modLibraries)
 		{
-			// Get the list of all assets.
-			var items = modLibrary.list(null);
-			
-			// Filter out assets that don't match the type.
-			items = items.filter(function(item:String):Bool
-			{
-				// Use existsPoly() instead of exists() because exists() converts to a LimeAssetType.
-				return modLibrary.existsPoly(item, type);
-			});
-
-			// Add the assets to the list.
-			arr = arr.concat(items);
+			arr = arr.concat(modLibrary.list(type == null ? null : LimeModLibrary.PolyToLime(type)));
 		}
 		return arr;
 	}
@@ -272,25 +238,12 @@ class LimeBackend implements IBackend
 			}
 		}
 	}
-
-	public function preloadImagesToCache():Void
-	{
-		// On HTML5, we need to call `loadImage()` on all images before they can be later loaded synchronously.
-		trace('Image preload global...');
-		for (modLibrary in modLibraries)
-		{
-			trace('Image preload local... (${modLibrary.libraryId})');
-			modLibrary.preloadImagesToCache();
-		}
-	}
 }
 
 class LimeModLibrary extends AssetLibrary
 {
 	public static function LimeToPoly(type:AssetType):PolymodAssetType
 	{
-		if (type == null)
-			return null;
 		return switch (type)
 		{
 			case AssetType.BINARY: PolymodAssetType.BYTES;
@@ -307,27 +260,22 @@ class LimeModLibrary extends AssetLibrary
 
 	public static function PolyToLime(type:PolymodAssetType):AssetType
 	{
-		if (type == null)
-			return null;
 		return switch (type)
 		{
 			case PolymodAssetType.BYTES: AssetType.BINARY;
-			case PolymodAssetType.TEXT: AssetType.TEXT;
-			case PolymodAssetType.IMAGE: AssetType.IMAGE;
 			case PolymodAssetType.FONT: AssetType.FONT;
-			case PolymodAssetType.AUDIO_GENERIC: AssetType.SOUND;
+			case PolymodAssetType.IMAGE: AssetType.IMAGE;
 			case PolymodAssetType.AUDIO_MUSIC: AssetType.MUSIC;
 			case PolymodAssetType.AUDIO_SOUND: AssetType.SOUND;
+			case PolymodAssetType.AUDIO_GENERIC: AssetType.SOUND;
 			case PolymodAssetType.MANIFEST: AssetType.MANIFEST;
 			case PolymodAssetType.TEMPLATE: AssetType.TEMPLATE;
-			// case PolymodAssetType.VIDEO: 
-			// case PolymodAssetType.UNKNOWN: AssetType.BINARY;
+			case PolymodAssetType.TEXT: AssetType.TEXT;
 			default: AssetType.BINARY;
 		}
 	}
 
 	public var pathPrefix:String;
-	public var libraryId:String;
 
 	var b:LimeBackend;
 	var p:PolymodAssetLibrary;
@@ -335,26 +283,13 @@ class LimeModLibrary extends AssetLibrary
 	var hasFallback:Bool;
 	var type(default, null):Map<String, AssetType>;
 
-	#if html5
-	/**
-	 * Preload images on HTML5 to allow images to be loaded synchronously.
-	 * This doesn't break mods because a new 
-	 */
-	var imageCache:Map<String, lime.graphics.Image>;
-	#end
-
-	public function new(backend:LimeBackend, fallback:AssetLibrary, ?pathPrefix:String = '', ?libraryId:String = 'default')
+	public function new(backend:LimeBackend, fallback:AssetLibrary, ?pathPrefix:String = '')
 	{
 		b = backend;
 		p = b.polymodLibrary;
 		this.pathPrefix = pathPrefix;
-		this.libraryId = libraryId;
 		this.fallback = fallback;
 		hasFallback = this.fallback != null;
-		#if html5
-		imageCache = new Map<String, lime.graphics.Image>();
-		preloadImagesToCache();
-		#end
 		super();
 	}
 
@@ -364,30 +299,6 @@ class LimeModLibrary extends AssetLibrary
 		p = null;
 		fallback = null;
 		type = null;
-	}
-
-	public function getFallbackLibrary():AssetLibrary
-	{
-		return fallback;
-	}
-
-	public function preloadImagesToCache():Void
-	{
-		// On HTML5, we need to call `loadImage()` on all images before they can be later loaded synchronously.
-
-		for (imageAsset in this.list(AssetType.IMAGE))
-		{
-			var symbol = new IdAndLibrary(imageAsset, this);
-			var filePath = p.file(symbol.modId);
-			trace('Preloading image: ${imageAsset}~${filePath}');
-
-			#if html5
-			if (imageCache.exists(filePath))
-				continue;
-			#end
-
-			loadImage(imageAsset);
-		}
 	}
 
 	public override function getAsset(id:String, type:String):Dynamic
@@ -423,26 +334,7 @@ class LimeModLibrary extends AssetLibrary
 	public override function exists(id:String, type:String):Bool
 	{
 		var symbol = new IdAndLibrary(id, this);
-		// We have to convert the LimeAssetType to a PolymodAssetType.
 		if (p.check(symbol.modId, LimeToPoly(cast type)))
-		{
-			// Found a modded asset.
-			return true;
-		}
-		else if (hasFallback)
-		{
-			// Check the base asset.
-			return existsDefault(id, type);
-		}
-		// No fallback.
-		return false;
-	}
-
-	// When are they going to add overloads ugh.
-	public function existsPoly(id:String, type:PolymodAssetType):Bool
-	{
-		var symbol = new IdAndLibrary(id, this);
-		if (p.check(symbol.modId, type))
 		{
 			// Found a modded asset.
 			return true;
@@ -536,27 +428,7 @@ class LimeModLibrary extends AssetLibrary
 		var symbol = new IdAndLibrary(id, this);
 		if (p.check(symbol.modId))
 		{
-			#if html5
-			// NOTE: HTML5 does not like Images.fromBytes because images can't be loaded synchronously.
-			// So we cache the image data in a Bytes object and load it asynchronously.
-			var filePath = p.file(symbol.modId);
-			if (imageCache.exists(filePath))
-			{
-				return imageCache.get(filePath);
-			}
-			else
-			{
-				// LimeBackend has a function to precache mod images when a mod is added,
-				// and any HTML5-based file systems need to call it.
-
-				// If the image isn't cached, tough luck.
-				return null;
-			}
-			#else
-			// Other platforms don't have these issues with images,
-			// and other file types can be loaded synchronously.
 			return Image.fromBytes(p.fileSystem.getFileBytes(p.file(symbol.modId)));
-			#end
 		}
 		else if (hasFallback)
 		{
@@ -660,30 +532,11 @@ class LimeModLibrary extends AssetLibrary
 
 	public override function loadImage(id:String):Future<Image>
 	{
+		Polymod.debug('LimeModLibrary.loadImage($id)');
 		var symbol = new IdAndLibrary(id, this);
 		if (p.check(symbol.modId))
 		{
-			trace('Loading image ' + symbol.modId + ' from ' + p.file(symbol.modId));
-
-			// We load the bytes, then load the file, rather than using Image.loadFromFile,
-			// because URLs don't work with MemoryFileSystem.
-			var filePath = p.file(symbol.modId);
-			var dabytes = p.fileSystem.getFileBytes(filePath);
-			var imageFuture = Image.loadFromBytes(dabytes);
-
-			#if html5
-			imageFuture.onComplete((result:Image) ->
-			{
-				if (result != null)
-				{
-					trace('Adding ' + filePath + ' to image cache.');
-					trace(result);
-					imageCache.set(filePath, result);
-				}
-			});
-			#end
-
-			return imageFuture;
+			return Image.loadFromFile(p.file(symbol.modId));
 		}
 		else if (hasFallback)
 		{
@@ -727,14 +580,7 @@ class LimeModLibrary extends AssetLibrary
 		if (p.check(symbol.modId))
 		{
 			var request = new HTTPRequest<String>();
-			return request.load(paths.get(p.file(symbol.modId))).then((modText) ->
-			{
-				if (modText != null)
-				{
-					modText = p.mergeAndAppendText(id, modText);
-				}
-				return Future.withValue(modText);
-			});
+			return request.load(paths.get(p.file(symbol.modId)));
 		}
 		else if (hasFallback)
 		{
@@ -773,15 +619,6 @@ class LimeModLibrary extends AssetLibrary
 		var requestedType = type != null ? cast(type, AssetType) : null;
 		var items = [];
 
-		var addItem = (path:String) ->
-		{
-			// var modifiedPath = (libraryId != '') ? libraryId + ':' + path : path;
-			if (items.indexOf(path) == -1)
-			{
-				items.push(path);
-			}
-		};
-
 		for (id in p.type.keys())
 		{
 			if (id.startsWith(PolymodConfig.appendFolder) || id.startsWith(PolymodConfig.mergeFolder))
@@ -793,13 +630,13 @@ class LimeModLibrary extends AssetLibrary
 				var assetId = Util.stripPathPrefix(id, p.localeAssetPrefix);
 				if (id.startsWith(p.assetPrefix))
 					assetId = p.prependAssetsPrefix(assetId);
-				addItem(assetId);
+				items.push(assetId);
 			}
 			else
 			#end
 			if (requestedType == null || exists(id, requestedType))
 			{
-				addItem(p.prependAssetsPrefix(id));
+				items.push(p.prependAssetsPrefix(id));
 			}
 		}
 
@@ -824,7 +661,7 @@ class LimeModLibrary extends AssetLibrary
 						var assetId = Util.stripPathPrefix(fallbackId, p.localeAssetPrefix);
 						if (fallbackId.startsWith(p.assetPrefix))
 							assetId = p.prependAssetsPrefix(assetId);
-						addItem(assetId);
+						items.push(assetId);
 					}
 				}
 				else
@@ -834,7 +671,7 @@ class LimeModLibrary extends AssetLibrary
 					if (requestedType == null || fallback.exists(assetId, type))
 					{
 						// The asset in other locales should be added to the list normally.
-						addItem(assetId);
+						items.push(assetId);
 					}
 				}
 			}
@@ -844,7 +681,7 @@ class LimeModLibrary extends AssetLibrary
 				var assetId = fallbackId;
 				if (requestedType == null || fallback.exists(assetId, type))
 				{
-					addItem(assetId);
+					items.push(assetId);
 				}
 			}
 			#else
@@ -852,17 +689,12 @@ class LimeModLibrary extends AssetLibrary
 			var assetId = fallbackId;
 			if (requestedType == null || fallback.exists(assetId, type))
 			{
-				addItem(assetId);
+				items.push(assetId);
 			}
 			#end
 		}
 
 		return Util.filterUnique(items);
-	}
-
-	public override function load():Future<AssetLibrary>
-	{
-		return super.load();
 	}
 }
 

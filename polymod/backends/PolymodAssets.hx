@@ -73,6 +73,7 @@ typedef PolymodAssetsParams =
 
 class PolymodAssets
 {
+	/**PUBLIC STATIC**/
 	public static function init(params:PolymodAssetsParams):PolymodAssetLibrary
 	{
 		var framework:polymod.Framework = params.framework;
@@ -186,6 +187,7 @@ class PolymodAssets
 		return library.list(type);
 	}
 
+	/**PUBLIC STATIC**/
 	private static var library:PolymodAssetLibrary;
 
 	/**

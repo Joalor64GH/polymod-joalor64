@@ -42,7 +42,7 @@ class HEAPSBackend implements IBackend
 		if (defaultLoader == null)
 		{
 			var loader = Res.loader;
-			if (Std.isOfType(loader, HEAPSModLoader) == false)
+			if (Std.is(loader, HEAPSModLoader) == false)
 			{
 				defaultLoader = loader;
 			}

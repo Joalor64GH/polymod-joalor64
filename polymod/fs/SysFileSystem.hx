@@ -4,12 +4,10 @@ package polymod.fs;
 import polymod.Polymod.ModMetadata;
 import polymod.fs.PolymodFileSystem;
 import polymod.util.Util;
-import polymod.util.VersionUtil;
-import thx.semver.VersionRule;
 
 /**
- * An implementation of IFileSystem which accesses files from folders in the local directory.
- * This is currently the default file system for native/Desktop platforms.
+ * An implementation of IFileSystem which accesses files from the local directory.
+ * This is the default file system for desktop platforms.
  */
 class SysFileSystem implements IFileSystem
 {
@@ -20,78 +18,56 @@ class SysFileSystem implements IFileSystem
 		this.modRoot = params.modRoot;
 	}
 
-	public function exists(path:String)
+	public inline function exists(path:String)
 	{
 		return sys.FileSystem.exists(path);
 	}
 
-	public function isDirectory(path:String)
-	{
+	public inline function isDirectory(path:String)
 		return sys.FileSystem.isDirectory(path);
-	}
 
-	public function readDirectory(path:String)
+	public inline function readDirectory(path:String)
+		return sys.FileSystem.readDirectory(path);
+
+	public inline function getFileContent(path:String)
 	{
-		try
-		{
-			return sys.FileSystem.readDirectory(path);
-		}
-		catch (e)
-		{
-			Polymod.warning(DIRECTORY_MISSING, 'Could not find directory "${path}"');
-			return [];
-		}
+		if (!exists(path))
+			return null;
+		return sys.io.File.getContent(path);
 	}
 
-	public function getFileContent(path:String)
-	{
-		return getFileBytes(path).toString();
-	}
-
-	public function getFileBytes(path:String)
+	public inline function getFileBytes(path:String)
 	{
 		if (!exists(path))
 			return null;
 		return sys.io.File.getBytes(path);
 	}
 
-	public function scanMods(?apiVersionRule:VersionRule):Array<ModMetadata>
+	public function scanMods()
 	{
-		if (apiVersionRule == null)
-			apiVersionRule = VersionUtil.DEFAULT_VERSION_RULE;
-
 		var dirs = readDirectory(modRoot);
-		var result:Array<ModMetadata> = [];
-		for (dir in dirs)
+		var l = dirs.length;
+		for (i in 0...l)
 		{
-			var fullDir = Util.pathJoin(modRoot, dir);
-			if (!isDirectory(fullDir))
-				continue;
-
-			var meta:ModMetadata = this.getMetadata(dir);
-
-			if (meta == null)
-				continue;
-
-			if (!VersionUtil.match(meta.apiVersion, apiVersionRule))
-				continue;
-
-			result.push(meta);
+			var j = l - i - 1;
+			var dir = dirs[j];
+			var testDir = '$modRoot/$dir';
+			if (!isDirectory(testDir) || !exists(testDir))
+			{
+				dirs.splice(j, 1);
+			}
 		}
-
-		return result;
+		return dirs;
 	}
 
 	public function getMetadata(modId:String)
 	{
-		var modPath = Util.pathJoin(modRoot, modId);
-		var test = readDirectory(modRoot);
-		if (exists(modPath))
+		if (exists(modId))
 		{
 			var meta:ModMetadata = null;
 
-			var metaFile = Util.pathJoin(modPath, PolymodConfig.modMetadataFile);
-			var iconFile = Util.pathJoin(modPath, PolymodConfig.modIconFile);
+			var metaFile = Util.pathJoin(modId, PolymodConfig.modMetadataFile);
+			var iconFile = Util.pathJoin(modId, PolymodConfig.modIconFile);
 
 			if (!exists(metaFile))
 			{
@@ -102,13 +78,9 @@ class SysFileSystem implements IFileSystem
 			{
 				var metaText = getFileContent(metaFile);
 				meta = ModMetadata.fromJsonStr(metaText);
+				if (meta == null)
+					return null;
 			}
-
-			if (meta == null)
-				return null;
-
-			meta.id = modId;
-			meta.modPath = modPath;
 
 			if (!exists(iconFile))
 			{

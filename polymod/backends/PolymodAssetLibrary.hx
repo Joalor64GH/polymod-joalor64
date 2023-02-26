@@ -1,13 +1,11 @@
 package polymod.backends;
 
-import openfl.display3D.IndexBuffer3D;
 import haxe.io.Bytes;
 import polymod.backends.IBackend;
 import polymod.backends.PolymodAssets.PolymodAssetType;
 import polymod.format.ParseRules;
 import polymod.fs.PolymodFileSystem.IFileSystem;
 import polymod.util.Util;
-// import polymod.hscript.PolymodScriptClass;
 #if firetongue
 import firetongue.FireTongue;
 #end
@@ -193,24 +191,10 @@ class PolymodAssetLibrary
 		return backend.getText(id);
 	}
 
-	#if lime
-	public function loadText(id:String):lime.app.Future<String>
-	{
-		return backend.loadText(id);
-	}
-	#end
-
 	public function getBytes(id:String):Bytes
 	{
 		return backend.getBytes(id);
 	}
-
-	#if lime
-	public function loadBytes(id:String):lime.app.Future<Bytes>
-	{
-		return backend.loadBytes(id);
-	}
-	#end
 
 	public function getPath(id:String):String
 	{
@@ -233,8 +217,6 @@ class PolymodAssetLibrary
 
 		for (id in this.type.keys())
 		{
-			if (items.indexOf(id) != -1)
-				continue;
 			if (id.indexOf('_append') == 0 || id.indexOf('_merge') == 0)
 				continue;
 			if (type == null || type == BYTES || check(id, type))
@@ -370,9 +352,7 @@ class PolymodAssetLibrary
 			#end
 			var filePath = Util.pathJoin(d, id);
 			if (fileSystem.exists(filePath))
-			{
 				return true;
-			}
 		}
 		// The loop didn't find it.
 		return false;
@@ -545,6 +525,10 @@ class PolymodAssetLibrary
 			if (fileSystem.exists(d))
 			{
 				all = fileSystem.readDirectoryRecursive(d);
+			}
+			else
+			{
+				all = [];
 			}
 		}
 		catch (msg:Dynamic)

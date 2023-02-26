@@ -119,9 +119,9 @@ class OpenFLWithNodeBackend extends OpenFLBackend
 	}
 
 	// -----------------------------------------------------------------------------------------------
-	override function buildModLibrary(fallbackLibrary, pathPrefix, libraryName):LimeModLibrary
+	override function getModLibrary(fallbackLibrary, pathPrefix):LimeModLibrary
 	{
-		return new OpenFLNodeModLibrary(this, fallbackLibrary, pathPrefix, libraryName);
+		return new OpenFLNodeModLibrary(this, fallbackLibrary, pathPrefix);
 	}
 
 	// -----------------------------------------------------------------------------------------------
@@ -155,9 +155,9 @@ class OpenFLNodeModLibrary extends LimeModLibrary
 	 * Constructor
 	 * @param	backend
 	 */
-	public function new(backend:OpenFLWithNodeBackend, fallback:AssetLibrary, ?pathPrefix:String = '', ?libraryName:String = '')
+	public function new(backend:OpenFLWithNodeBackend, fallback:AssetLibrary, ?pathPrefix:String = '')
 	{
-		super(backend, fallback, pathPrefix, libraryName);
+		super(backend, fallback, pathPrefix);
 	}
 
 	// -----------------------------------------------------------------------------------------------

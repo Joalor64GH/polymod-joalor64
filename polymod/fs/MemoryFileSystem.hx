@@ -1,12 +1,10 @@
 package polymod.fs;
 
-import haxe.io.Bytes;
-import haxe.io.Path;
 import polymod.Polymod.ModMetadata;
-import polymod.fs.PolymodFileSystem;
+import haxe.io.Path;
+import haxe.io.Bytes;
 import polymod.util.Util;
-import polymod.util.VersionUtil;
-import thx.semver.VersionRule;
+import polymod.fs.PolymodFileSystem;
 
 /**
  * This simple virtual file system demonstrates that anything can be used
@@ -16,15 +14,11 @@ import thx.semver.VersionRule;
  * Instantiate the MemoryFileSystem, call `addFileBytes` to add mod files to it,
  * then pass it to Polymod. Any mod files you add will be available to Polymod
  * as though they were accessed from the file system.
- * 
- * Using this file system directly is not recommended, as it is not optimized for native platforms.
- * If you can use a native file system, use `SysFileSystem` or `ZipFileSystem` instead.
  */
 class MemoryFileSystem implements PolymodFileSystem.IFileSystem
 {
 	var files = new Map<String, Bytes>();
-	var directories:Array<String> = [];
-	var modRoot:String = "";
+	var directories = [];
 
 	/**
 	 * Receive parameters to instantiate the MemoryFileSystem.
@@ -32,7 +26,6 @@ class MemoryFileSystem implements PolymodFileSystem.IFileSystem
 	public function new(params:PolymodFileSystemParams)
 	{
 		// No-op constructor.
-		modRoot = (params.modRoot == null) ? "" : params.modRoot;
 	}
 
 	/**
@@ -45,13 +38,8 @@ class MemoryFileSystem implements PolymodFileSystem.IFileSystem
 	 */
 	public function addFileBytes(path:String, data:Bytes):Void
 	{
-		path = Path.removeTrailingSlashes(path);
 		files.set(path, data);
-		var parentDirs = Util.listAllParentDirs(Path.directory(path));
-		// remove the actual path to the file from the directories array
-		parentDirs.remove(path);
-		directories = directories.concat(parentDirs);
-		directories = Util.filterUnique(directories);
+		directories = directories.concat(Util.listAllParentDirs(path));
 	}
 
 	/**
@@ -71,139 +59,95 @@ class MemoryFileSystem implements PolymodFileSystem.IFileSystem
 		directories = [];
 	}
 
-	public function exists(path:String)
+	public inline function exists(path:String)
 	{
-		path = Path.removeTrailingSlashes(path);
-		return files.exists(path) || directories.contains(path); // checks both files and folders
+		return files.exists(path);
 	}
 
-	public function isDirectory(path:String)
+	public inline function isDirectory(path:String)
 	{
-		path = Path.removeTrailingSlashes(path);
 		return directories.indexOf(path) != -1;
 	}
 
 	/**
 	 * List all files AND directories at the given path.
 	 */
-	public function readDirectory(path:String):Array<String>
+	public inline function readDirectory(path:String):Array<String>
 	{
-		path = Path.removeTrailingSlashes(path);
 		var result = [];
 		for (key => _v in files)
 		{
 			// Directory must exactly match.
 			if (Path.directory(key) == path)
 			{
-				var parts = key.split('/');
-				result.push(parts[parts.length - 1]);
+				result.push(key);
 			}
 		}
 		for (dir in directories)
 		{
-			// avoiding pushing duplicates
-			if (Path.directory(dir) == path && !result.contains(dir))
+			if (Path.directory(dir) == path)
 			{
-				var d = Path.directory(dir);
-				var actualdir = dir.substring(d.length);
-				if (actualdir.charAt(0) == '/')
-					actualdir = actualdir.substring(1);
-				result.push(actualdir);
+				result.push(dir);
 			}
 		}
 		return result;
 	}
 
-	/**
-	 * Directly retrieve the text contents of a file.
-	 * 
-	 * @param path The path name of the file to read.
-	 * @return The text contents of the file.
-	 */
-	public function getFileContent(path:String):String
+	public inline function getFileContent(path:String):String
 	{
-		var fileBytes = getFileBytes(path);
-		if (fileBytes == null)
-			return null;
-		return fileBytes.toString();
+		return files.get(path).toString();
 	}
 
-	/**
-	 * Directly retrieve the binary contents of a file.
-	 *
-	 * @param path The path name of the file to read.
-	 * @return The contents of the file as Bytes.
-	 */
-	public function getFileBytes(path:String):Bytes
+	public inline function getFileBytes(path:String):Bytes
 	{
 		return files.get(path);
 	}
 
 	/**
 	 * List all files at or below the given path.
-	 		*
-	 		* @param path The path name of the directory to read.
 	 */
-	public function readDirectoryRecursive(path:String)
+	public inline function readDirectoryRecursive(path:String)
 	{
-		path = Path.removeTrailingSlashes(path);
 		var result = [];
 		for (key => _v in files)
 		{
 			// Directory OR PARENT must exactly match.
 			if (key.indexOf(path) == 0)
 			{
-				result.push(key.substring(path.length + 1));
+				result.push(key);
 			}
 		}
-		// Nooo, only files needed
-		// result.concat(directories.filter(function(dir)
-		// {
-		// 	return dir.indexOf(path) == 0;
-		// }));
-		return result;
-	}
-
-	public function scanMods(?apiVersionRule:VersionRule):Array<ModMetadata>
-	{
-		if (apiVersionRule == null)
-			apiVersionRule = VersionUtil.DEFAULT_VERSION_RULE;
-
-		var dirs = readDirectory(modRoot);
-		var result:Array<ModMetadata> = [];
-		for (dir in dirs)
+		result.concat(directories.filter(function(dir)
 		{
-			var testDir = Util.pathJoin(modRoot, dir);
-
-			if (!exists(testDir))
-				continue;
-
-			if (!isDirectory(testDir))
-				continue;
-
-			var meta:ModMetadata = getMetadata(dir);
-
-			if (meta == null)
-				continue;
-
-			if (!VersionUtil.match(meta.apiVersion, apiVersionRule))
-				continue;
-
-			result.push(meta);
-		}
-
+			return dir.indexOf(path) == 0;
+		}));
 		return result;
 	}
 
-	public function getMetadata(modId:String)
+	public inline function scanMods():Array<String>
 	{
-		var modpath = Util.pathJoin(modRoot, modId);
-		if (exists(modpath))
+		var dirs = readDirectory('');
+		var l = dirs.length;
+		for (i in 0...l)
+		{
+			var j = l - i - 1;
+			var dir = dirs[j];
+			if (!isDirectory(dir) || !exists(dir))
+			{
+				dirs.splice(j, 1);
+			}
+		}
+		return dirs;
+	}
+
+	public inline function getMetadata(modId:String)
+	{
+		if (exists(modId))
 		{
 			var meta:ModMetadata = null;
 
-			var metaFile = Util.pathJoin(modpath, PolymodConfig.modMetadataFile);
-			var iconFile = Util.pathJoin(modpath, PolymodConfig.modIconFile);
+			var metaFile = Util.pathJoin(modId, PolymodConfig.modMetadataFile);
+			var iconFile = Util.pathJoin(modId, PolymodConfig.modIconFile);
 
 			if (!exists(metaFile))
 			{
@@ -216,9 +160,6 @@ class MemoryFileSystem implements PolymodFileSystem.IFileSystem
 				meta = ModMetadata.fromJsonStr(metaText);
 				if (meta == null)
 					return null;
-
-				meta.id = modId;
-				meta.modPath = modpath;
 			}
 
 			if (!exists(iconFile))
@@ -235,7 +176,7 @@ class MemoryFileSystem implements PolymodFileSystem.IFileSystem
 		}
 		else
 		{
-			Polymod.error(MISSING_MOD, 'Could not find mod directory: $modpath');
+			Polymod.error(MISSING_MOD, 'Could not find mod directory: $modId');
 		}
 		return null;
 	}
