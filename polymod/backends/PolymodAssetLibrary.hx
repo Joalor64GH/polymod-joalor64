@@ -470,19 +470,13 @@ class PolymodAssetLibrary
 		_extensionSet('yml', TEXT);
 		_extensionSet('yyp', TEXT);
 
-		_extensionSet('avchd', VIDEO);
 		_extensionSet('avi', VIDEO);
-		_extensionSet('drc', VIDEO);
-		_extensionSet('f4v', VIDEO);
-		_extensionSet('flv', VIDEO);
-		_extensionSet('gifv', VIDEO);
 		_extensionSet('mkv', VIDEO);
 		_extensionSet('mov', VIDEO);
 		_extensionSet('mp4', VIDEO);
 		_extensionSet('swf', VIDEO);
-		_extensionSet('vob', VIDEO);
+		_extensionSet('swc', VIDEO);
 		_extensionSet('webm', VIDEO);
-		_extensionSet('wmv', VIDEO);
 
 		_extensionSet('7z', BINARY);
 		_extensionSet('atf', BINARY);
