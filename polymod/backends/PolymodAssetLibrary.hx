@@ -474,8 +474,8 @@ class PolymodAssetLibrary
 		_extensionSet('mkv', VIDEO);
 		_extensionSet('mov', VIDEO);
 		_extensionSet('mp4', VIDEO);
-		_extensionSet('swf', VIDEO);
 		_extensionSet('swc', VIDEO);
+		_extensionSet('swf', VIDEO);
 		_extensionSet('webm', VIDEO);
 
 		_extensionSet('7z', BINARY);
