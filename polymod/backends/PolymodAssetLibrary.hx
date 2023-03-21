@@ -412,6 +412,7 @@ class PolymodAssetLibrary
 		_extensionSet('csx', TEXT);
 		_extensionSet('cu', TEXT);
 		_extensionSet('d', TEXT);
+		_extensionSet('es', TEXT);
 		_extensionSet('frag', TEXT);
 		_extensionSet('gpe', TEXT);
 		_extensionSet('h', TEXT);
@@ -445,6 +446,7 @@ class PolymodAssetLibrary
 		_extensionSet('pl', TEXT);
 		_extensionSet('plist', TEXT);
 		_extensionSet('properties', TEXT);
+		_extensionSet('pt', TEXT);
 		_extensionSet('py', TEXT);
 		_extensionSet('r', TEXT);
 		_extensionSet('rst', TEXT);
