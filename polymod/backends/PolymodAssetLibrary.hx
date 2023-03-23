@@ -405,6 +405,7 @@ class PolymodAssetLibrary
 
 		_extensionSet('bat', TEXT);
 		_extensionSet('c', TEXT);
+		_extensionSet('cc', TEXT);
 		_extensionSet('cpp', TEXT);
 		_extensionSet('cs', TEXT);
 		_extensionSet('css', TEXT);
@@ -414,11 +415,16 @@ class PolymodAssetLibrary
 		_extensionSet('d', TEXT);
 		_extensionSet('es', TEXT);
 		_extensionSet('frag', TEXT);
+		_extensionSet('fs', TEXT);
+		_extensionSet('gd', TEXT);
 		_extensionSet('gpe', TEXT);
 		_extensionSet('h', TEXT);
+		_extensionSet('hh', TEXT);
 		_extensionSet('hhx', TEXT);
+		_extensionSet('hs', TEXT);
 		_extensionSet('hscript', TEXT);
 		_extensionSet('hta', TEXT);
+		_extensionSet('htm', TEXT);
 		_extensionSet('html', TEXT);
 		_extensionSet('hu', TEXT);
 		_extensionSet('hx', TEXT);
@@ -428,12 +434,14 @@ class PolymodAssetLibrary
 		_extensionSet('hxs', TEXT);
 		_extensionSet('hxx', TEXT);
 		_extensionSet('i', TEXT);
+		_extensionSet('ii', TEXT);
 		_extensionSet('ini', TEXT);
 		_extensionSet('java', TEXT);
 		_extensionSet('js', TEXT);
 		_extensionSet('json', TEXT);
 		_extensionSet('jsonc', TEXT);
 		_extensionSet('lime', TEXT);
+		_extensionSet('ls', TEXT);
 		_extensionSet('lua', TEXT);
 		_extensionSet('m', TEXT);
 		_extensionSet('markdown', TEXT);
@@ -445,10 +453,12 @@ class PolymodAssetLibrary
 		_extensionSet('pbxproj', TEXT);
 		_extensionSet('pl', TEXT);
 		_extensionSet('plist', TEXT);
+		_extensionSet('pp', TEXT); // lmao
 		_extensionSet('properties', TEXT);
 		_extensionSet('pt', TEXT);
 		_extensionSet('py', TEXT);
 		_extensionSet('r', TEXT);
+		_extensionSet('rs', TEXT);
 		_extensionSet('rst', TEXT);
 		_extensionSet('ru', TEXT);
 		_extensionSet('s', TEXT);
