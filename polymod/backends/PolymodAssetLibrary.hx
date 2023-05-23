@@ -448,6 +448,7 @@ class PolymodAssetLibrary
 		_extensionSet('md', TEXT);
 		_extensionSet('mm', TEXT);
 		_extensionSet('mpf', TEXT);
+		_extensionSet('mxml', TEXT);
 		_extensionSet('nmml', TEXT);
 		_extensionSet('ogmo', TEXT);
 		_extensionSet('pbxproj', TEXT);
@@ -525,6 +526,7 @@ class PolymodAssetLibrary
 		_extensionSet('xdx', DISC);
 
 		_extensionSet('bundle', MANIFEST);
+		_extensionSet('manifest', MANIFEST);
 		_extensionSet('webmanifest', MANIFEST);
 
 		_extensionSet('tpl', TEMPLATE);
