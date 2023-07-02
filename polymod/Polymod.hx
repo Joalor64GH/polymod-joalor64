@@ -643,7 +643,7 @@ typedef ModContributor =
 {
 	name:String,
 	role:String,
-	email:String,
+	?email:String,
 	url:String
 };
 
